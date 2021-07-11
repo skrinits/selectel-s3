@@ -15,7 +15,7 @@ module Selectel
       def upload_remote_file(file_url, remote_path)
         object = s3_resource.bucket(container_name).object(remote_path)
 
-        file = open(file_url)
+        file = fetch_file(file_url)
 
         object.upload_file(file)
 
@@ -52,6 +52,18 @@ module Selectel
 
       def fetch_all_files(folder_path)
         Dir["#{ folder_path }/**/*"].select { |path| File.file?(path) }
+      end
+
+      def fetch_file(file_url)
+        file = open(file_url)
+
+        return file unless file.is_a?(StringIO)
+
+        result = Tempfile.new
+
+        File.write(result.path, file.string)
+
+        result
       end
     end
   end
