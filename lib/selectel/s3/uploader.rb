@@ -61,7 +61,7 @@ module Selectel
 
         result = Tempfile.new
 
-        File.write(result.path, file.string)
+        File.write(result.path, file.string.force_encoding('UTF-8'))
 
         result
       end
